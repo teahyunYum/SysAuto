@@ -1,5 +1,6 @@
 import tkinter as tk
 from Mainui import Mainui
+from OSAutoRun import OSAutoRun
 class OssetingMain(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
@@ -10,7 +11,7 @@ class OssetingMain(tk.Tk):
         Mainmenu=tk.Menu(self)
         Mainmenu=tk.Menu(Mainmenu,tearoff=0)
         Mainmenu.add_command(label='Sys Info',command=lambda:self.switch_frame(Mainui))
-        Mainmenu.add_command(label='Run',command=lambda:self.switch_frame(Mainui))
+        Mainmenu.add_command(label='Run',command=lambda:self.switch_frame(OSAutoRun))
         Mainmenu.add_command(label='Setting',command=lambda:self.switch_frame(Mainui))
         self.config(menu=Mainmenu)
         
