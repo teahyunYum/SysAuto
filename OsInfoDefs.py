@@ -14,7 +14,7 @@ def CRinfo():
     temp.append(datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S"))
     temp.append(list(psutil.cpu_stats())[2])
     temp1=[x / psutil.cpu_count() * 100 for x in psutil.getloadavg()]
-    temp.append(temp1[2])
+    temp.append(round(temp1[2],4))
     temp1=list(psutil.virtual_memory())[0]
     temp.append(str(temp1)[:-9])
     temp1=list(psutil.virtual_memory())[1]
