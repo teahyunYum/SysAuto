@@ -6,7 +6,7 @@ class OssetingMain(tk.Tk):
         tk.Tk.__init__(self)
         self._frame = None
         self.title("OS InfoMation AutoSetting")
-        self.geometry("830x520+500+200")
+        self.geometry("700x540+500+200")
         self.switch_frame(Mainui)
         Mainmenu=tk.Menu(self)
         Mainmenu=tk.Menu(Mainmenu,tearoff=0)

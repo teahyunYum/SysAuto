@@ -1,9 +1,11 @@
 import subprocess
+import PyautoDefs as atodef
 import re
+
 def defaulpowesaveing():
     sequence=["powercfg","/GETACTIVESCHEME"]
     temp=subprocess.check_output(sequence,text=True)
-    temp=temp[-4:].replace(')',"")
+    temp=temp[49:].replace(')',"").replace(" ","").replace("(","")
     return temp
 def username():
     sequence=["echo", "%username%"]
@@ -15,6 +17,10 @@ def updatestate():
     if temp=='3':temp='수동'
     elif temp=='2':temp='자동'
     elif temp=='4':temp='사용안함'
+    return temp
+def defenderstate():
+    temp=subprocess.check_output(['powershell','-command',"get-NetFirewallProfile"],text=True)
+    temp=re.search("Enabled.*",temp).group().replace("Enabled","").replace(" ","").replace(":","")
     return temp
 def powerset():
     sequence=[]
@@ -46,18 +52,43 @@ def updatedisabled():
     sequence.append(["sc","config","UsoSvc","start=disabled"])
     sequence.append(["net","stop","wuauserv"])
     for i in range(len(sequence)):subprocess.call(sequence[i])
+def updatereset():
+    sequence=[]
+    sequence.append(["reg","add","HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\wuauserv","/v","Start","/t","REG_DWORD","/d", "2", "/f"])
+    sequence.append(["reg","add","HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WaasMedicSvc","/v","Start","/t","REG_DWORD","/d", "2", "/f"])
+    sequence.append(["reg","add",r"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UsoSvc","/v","Start","/t","REG_DWORD","/d", "2", "/f"])
+    sequence.append(["sc","config","wuauserv","start=auto"])
+    sequence.append(["sc","config","WaasMedicSvc","start=auto"])
+    sequence.append(["sc","config","UsoSvc","start=auto"])
+    sequence.append(["net","start","wuauserv"])
+    for i in range(len(sequence)):subprocess.call(sequence[i])
+def defenderdisabled():
+    subprocess.check_output(['powershell','-command',"Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False"])
+
 def defaultlist(*args):
     temp=[]
     for i in args:temp.append(i)
     return temp
+
 def sysdefault():
-    temp=defaultlist(defaulpowesaveing(),username(),updatestate())
+    temp=defaultlist(defaulpowesaveing(),username(),updatestate(),defenderstate())
     return temp
 
 def runset(temp):
+    with open('checklist.text','w') as f:
+        for i in range(len(temp)):
+            f.write(str(temp[i])+'\n')
     if temp[0]==True:powerset()
     else:pass
     if temp[1]==True:useraccountset()
     else:pass
     if temp[2]==True:updatedisabled()
+    else:pass
+    if temp[3]==True:defenderdisabled()
+    else:pass
+    if temp[4]==True:atodef.allrun()
+    else:pass
     
+
+
+
